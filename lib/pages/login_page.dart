@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui'; // Penting untuk efek Blur
 import '../models/user_model.dart';
 import '../services/storage_service.dart';
 import 'home_page.dart';
@@ -16,9 +15,12 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   bool isRegister = false;
 
-  // Skema warna Gen Z (Electric Purple & Soft Pink)
-  final Color primaryColor = const Color(0xFF6366f1);
-  final Color accentColor = const Color(0xFFec4899);
+  // Palet Warna Minimalist & Professional 2026
+  final Color bgColor = const Color(0xFFF8FAFC); // Off-white clean
+  final Color cardColor = Colors.white;
+  final Color primaryText = const Color(0xFF1E293B); // Slate 900
+  final Color secondaryText = const Color(0xFF64748B); // Slate 500
+  final Color accentColor = const Color(0xFF4F46E5); // Indigo Professional
 
   _authAction() async {
     if (nameController.text.isNotEmpty && emailController.text.isNotEmpty) {
@@ -30,207 +32,180 @@ class _LoginPageState extends State<LoginPage> {
         MaterialPageRoute(builder: (context) => const HomePage()),
       );
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text("⚠️ Fill it up, bestie!"),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        ),
-      );
+      _showCustomSnackBar("Please fill all fields, Mahesa!");
     }
+  }
+
+  void _showCustomSnackBar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message, style: const TextStyle(color: Colors.white)),
+        backgroundColor: primaryText,
+        behavior: SnackBarBehavior.floating,
+        margin: const EdgeInsets.all(20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Stack(
-        children: [
-          // Background Ornaments
-          Positioned(
-            top: -50,
-            right: -50,
-            child: _buildCircle(200, primaryColor.withOpacity(0.3)),
-          ),
-          Positioned(
-            bottom: -100,
-            left: -50,
-            child: _buildCircle(300, accentColor.withOpacity(0.2)),
-          ),
-
-          Container(
-            width: double.infinity,
-            height: double.infinity,
-            decoration: const BoxDecoration(
-              color: Color(0xFF0f172a),
-            ), // Dark Deep Background
-            child: SafeArea(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 60),
-                    // Logo Section with Glow
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: primaryColor.withOpacity(0.5),
-                            blurRadius: 40,
-                            spreadRadius: 2,
-                          ),
-                        ],
-                      ),
-                      child: Icon(
-                        isRegister
-                            ? Icons.auto_awesome
-                            : Icons.rocket_launch_rounded,
-                        size: 70,
-                        color: Colors.white,
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-                    // Bold Header
-                    Text(
-                      isRegister ? "LET'S VIBE" : "WELCOME BACK",
-                      style: const TextStyle(
-                        fontSize: 40,
-                        fontWeight: FontWeight.w900,
-                        color: Colors.white,
-                        letterSpacing: -2,
-                      ),
-                    ),
-                    Text(
-                      "Your digital space, simplified.",
-                      style: TextStyle(color: Colors.grey[400], fontSize: 16),
-                    ),
-                    const SizedBox(height: 50),
-
-                    // Glassmorphism Input Card
-                    ClipRRect(
-                      borderRadius: BorderRadius.circular(30),
-                      child: BackdropFilter(
-                        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                        child: Container(
-                          padding: const EdgeInsets.all(25),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.05),
-                            borderRadius: BorderRadius.circular(30),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.1),
-                            ),
-                          ),
-                          child: Column(
-                            children: [
-                              _buildTextField(
-                                nameController,
-                                "Your Name",
-                                Icons.face_unlock_outlined,
-                              ),
-                              const SizedBox(height: 20),
-                              _buildTextField(
-                                emailController,
-                                "Email Address",
-                                Icons.alternate_email_rounded,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 40),
-
-                    // Modern Gradient Button
-                    GestureDetector(
-                      onTap: _authAction,
-                      child: Container(
-                        height: 65,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [primaryColor, accentColor],
-                          ),
-                          borderRadius: BorderRadius.circular(20),
-                          boxShadow: [
-                            BoxShadow(
-                              color: accentColor.withOpacity(0.3),
-                              blurRadius: 20,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
-                        ),
-                        child: Center(
-                          child: Text(
-                            isRegister ? "CREATE ACCOUNT" : "SIGN IN",
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 30),
-
-                    TextButton(
-                      onPressed: () => setState(() => isRegister = !isRegister),
-                      child: RichText(
-                        text: TextSpan(
-                          text: isRegister ? "Got an account? " : "New here? ",
-                          style: TextStyle(color: Colors.grey[400]),
-                          children: [
-                            TextSpan(
-                              text: isRegister ? "Login" : "Join the club",
-                              style: TextStyle(
-                                color: accentColor,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+      backgroundColor: bgColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 80),
+              // Brand Identity (Simple & Bold)
+              Container(
+                height: 50,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: accentColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.blur_on_rounded,
+                  color: Colors.white,
+                  size: 30,
                 ),
               ),
-            ),
+              const SizedBox(height: 32),
+              Text(
+                isRegister ? "Create Account" : "Welcome Back",
+                style: TextStyle(
+                  color: primaryText,
+                  fontSize: 32,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: -0.5,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Sign in to continue your journey.",
+                style: TextStyle(color: secondaryText, fontSize: 16),
+              ),
+              const SizedBox(height: 48),
+
+              // Form Section
+              _buildInputLabel("FULL NAME"),
+              _buildTextField(
+                nameController,
+                "Swasti Mahesa",
+                Icons.person_outline,
+              ),
+              const SizedBox(height: 24),
+              _buildInputLabel("EMAIL ADDRESS"),
+              _buildTextField(
+                emailController,
+                "mahesa@example.com",
+                Icons.mail_outline,
+              ),
+
+              const SizedBox(height: 40),
+
+              // Professional Primary Button
+              ElevatedButton(
+                onPressed: _authAction,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: accentColor,
+                  foregroundColor: Colors.white,
+                  minimumSize: const Size(double.infinity, 60),
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+                child: Text(
+                  isRegister ? "Get Started" : "Sign In",
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Secondary Toggle Action
+              Center(
+                child: TextButton(
+                  onPressed: () => setState(() => isRegister = !isRegister),
+                  child: RichText(
+                    text: TextSpan(
+                      text: isRegister
+                          ? "Already have an account? "
+                          : "New to the platform? ",
+                      style: TextStyle(color: secondaryText, fontSize: 14),
+                      children: [
+                        TextSpan(
+                          text: isRegister ? "Login" : "Join Now",
+                          style: TextStyle(
+                            color: accentColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  Widget _buildCircle(double size, Color color) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(shape: BoxShape.circle, color: color),
+  Widget _buildInputLabel(String label) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 4, bottom: 8),
+      child: Text(
+        label,
+        style: TextStyle(
+          color: primaryText,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+      ),
     );
   }
 
   Widget _buildTextField(
     TextEditingController controller,
-    String label,
+    String hint,
     IconData icon,
   ) {
-    return TextField(
-      controller: controller,
-      style: const TextStyle(color: Colors.white),
-      decoration: InputDecoration(
-        labelText: label,
-        labelStyle: TextStyle(color: Colors.grey[500]),
-        prefixIcon: Icon(icon, color: primaryColor),
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.05),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-          borderSide: BorderSide.none,
+    return Container(
+      decoration: BoxDecoration(
+        color: cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: TextField(
+        controller: controller,
+        style: TextStyle(color: primaryText),
+        decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(color: Colors.grey[400]),
+          prefixIcon: Icon(icon, color: secondaryText, size: 20),
+          border: InputBorder.none,
+          contentPadding: const EdgeInsets.symmetric(
+            vertical: 18,
+            horizontal: 20,
+          ),
         ),
-        contentPadding: const EdgeInsets.symmetric(vertical: 20),
       ),
     );
   }
