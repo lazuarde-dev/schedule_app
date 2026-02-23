@@ -15,7 +15,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   List<Task> tasks = [];
-  String userName = "User";
+  String userName = "Mahesa"; // Default ke nama panggilanmu
+
+  final Color bgColor = const Color(0xFFF8FAFC);
+  final Color accentColor = const Color(0xFF4F46E5); // Indigo Professional
+  final Color darkText = const Color(0xFF1E293B);
 
   @override
   void initState() {
@@ -34,67 +38,72 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        title: Text("Schedule", style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.w900, fontSize: 24)),
-        actions: [
-          GestureDetector(
-            onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ProfilePage())).then((_) => _loadData()),
-            child: Container(
-              margin: const EdgeInsets.only(right: 20),
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(color: colorScheme.primary.withOpacity(0.1), shape: BoxShape.circle),
-              child: Icon(Icons.person_rounded, color: colorScheme.primary),
-            ),
-          ),
-        ],
-      ),
+      backgroundColor: bgColor,
+      appBar: _buildAppBar(),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const SizedBox(height: 10),
-            Text("Hi, $userName 👋", style: const TextStyle(fontSize: 28, fontWeight: FontWeight.w900, letterSpacing: -0.5)),
-            Text("Let's make today productive.", style: TextStyle(color: Colors.grey[600], fontSize: 16)),
-            const SizedBox(height: 30),
-            _buildActionCard(colorScheme),
-            const SizedBox(height: 35),
-            Row(
-              children: [
-                const Text("Today's Tasks", style: TextStyle(fontSize: 20, fontWeight: FontWeight.w800)),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                  decoration: BoxDecoration(color: colorScheme.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-                  child: Text("${tasks.length} items", style: TextStyle(color: colorScheme.primary, fontWeight: FontWeight.bold, fontSize: 12)),
-                ),
-              ],
+            Text(
+              "Hi, $userName 👋",
+              style: TextStyle(color: darkText, fontSize: 30, fontWeight: FontWeight.w800, letterSpacing: -1),
             ),
-            const SizedBox(height: 20),
+            Text(
+              "Let's focus on your goals today.",
+              style: TextStyle(color: Colors.grey[600], fontSize: 16),
+            ),
+            const SizedBox(height: 32),
+            _buildActionCard(),
+            const SizedBox(height: 40),
+            _buildSectionHeader(),
+            const SizedBox(height: 16),
             Expanded(
-              child: tasks.isEmpty ? _buildEmptyState() : _buildTaskList(colorScheme),
+              child: tasks.isEmpty ? _buildEmptyState() : _buildTaskList(),
             ),
-            const SizedBox(height: 15),
-            _buildGenerateButton(colorScheme),
-            const SizedBox(height: 25),
+            const SizedBox(height: 16),
+            _buildGenerateButton(),
+            const SizedBox(height: 30),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildActionCard(ColorScheme color) {
+  PreferredSizeWidget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      centerTitle: false,
+      title: Text("Planner", 
+        style: TextStyle(color: darkText, fontWeight: FontWeight.w900, fontSize: 22)),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.only(right: 16),
+          child: IconButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ProfilePage())).then((_) => _loadData()),
+            icon: CircleAvatar(
+              backgroundColor: accentColor.withOpacity(0.1),
+              child: Icon(Icons.person_outline_rounded, color: accentColor),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildActionCard() {
     return Container(
+      width: double.infinity,
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [color.primary, color.secondary], begin: Alignment.topLeft, end: Alignment.bottomRight),
-        borderRadius: BorderRadius.circular(32),
-        boxShadow: [BoxShadow(color: color.primary.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10))],
+        color: darkText, // Dark Card untuk variasi Gen Z Professional
+        borderRadius: BorderRadius.circular(28),
+        boxShadow: [
+          BoxShadow(color: darkText.withOpacity(0.15), blurRadius: 20, offset: const Offset(0, 10))
+        ],
       ),
       child: Row(
         children: [
@@ -102,60 +111,83 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text("New Activity", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 8),
-                Text("Add your task and let AI refine your schedule.", style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 13)),
+                const Text("Add Task", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 6),
+                Text("Sync your workflow with AI refinement.", 
+                  style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 13)),
               ],
             ),
           ),
-          Material(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(20),
-            child: InkWell(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const AddTaskPage())).then((_) => _loadData()),
-              borderRadius: BorderRadius.circular(20),
-              child: Padding(padding: const EdgeInsets.all(12), child: Icon(Icons.add, color: color.primary, size: 28)),
+          ElevatedButton(
+            onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const AddTaskPage())).then((_) => _loadData()),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white,
+              foregroundColor: darkText,
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(16),
+              elevation: 0,
             ),
-          )
+            child: const Icon(Icons.add_rounded, size: 28),
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildTaskList(ColorScheme color) {
+  Widget _buildSectionHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text("Active Schedule", 
+          style: TextStyle(color: darkText, fontSize: 18, fontWeight: FontWeight.bold)),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+          decoration: BoxDecoration(
+            color: accentColor.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(100),
+          ),
+          child: Text("${tasks.length} tasks", 
+            style: TextStyle(color: accentColor, fontWeight: FontWeight.bold, fontSize: 12)),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildTaskList() {
     return ListView.separated(
       itemCount: tasks.length,
-      padding: const EdgeInsets.only(bottom: 20),
-      separatorBuilder: (_, __) => const SizedBox(height: 16),
+      separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         return Container(
           padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
-            color: color.surface,
-            borderRadius: BorderRadius.circular(24),
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
             border: Border.all(color: Colors.grey.withOpacity(0.1)),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4))],
           ),
           child: Row(
             children: [
               Container(
-                height: 50, width: 50,
-                decoration: BoxDecoration(color: color.primary.withOpacity(0.1), borderRadius: BorderRadius.circular(15)),
-                child: Center(child: Text("${index + 1}", style: TextStyle(color: color.primary, fontWeight: FontWeight.bold))),
+                height: 44, width: 44,
+                decoration: BoxDecoration(
+                  color: bgColor,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Center(child: Icon(Icons.calendar_today_outlined, size: 18, color: accentColor)),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(tasks[index].name, style: const TextStyle(fontWeight: FontWeight.w800, fontSize: 16)),
-                    const SizedBox(height: 4),
-                    Text("${tasks[index].duration} mins • ${tasks[index].time}", style: TextStyle(color: Colors.grey[600], fontSize: 13)),
+                    Text(tasks[index].name, style: TextStyle(color: darkText, fontWeight: FontWeight.w700, fontSize: 15)),
+                    Text("${tasks[index].duration}m • ${tasks[index].time}", 
+                      style: TextStyle(color: Colors.grey[500], fontSize: 12)),
                   ],
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.delete_outline_rounded, color: Colors.redAccent),
+                icon: const Icon(Icons.close_rounded, color: Colors.grey, size: 20),
                 onPressed: () {
                   setState(() => tasks.removeAt(index));
                   StorageService.saveTasks(tasks);
@@ -170,32 +202,32 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildEmptyState() {
     return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.coffee_outlined, size: 100, color: Colors.grey.withAlpha(50)),
-          const SizedBox(height: 16),
-          Text("No plans yet. Take a sip of coffee!", style: TextStyle(color: Colors.grey[500], fontWeight: FontWeight.w600)),
-        ],
+      child: Opacity(
+        opacity: 0.5,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.layers_clear_outlined, size: 64),
+            const SizedBox(height: 16),
+            Text("Your list is empty, Mahesa.", 
+              style: TextStyle(color: darkText, fontWeight: FontWeight.w500)),
+          ],
+        ),
       ),
     );
   }
 
-  Widget _buildGenerateButton(ColorScheme color) {
-    return Container(
-      decoration: BoxDecoration(
-        boxShadow: [BoxShadow(color: color.primary.withOpacity(0.2), blurRadius: 15, offset: const Offset(0, 8))],
-      ),
-      child: ElevatedButton.icon(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color.primary,
-          foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, 65),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        ),
-        onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ResultPage())),
-        icon: const Icon(Icons.auto_awesome_rounded),
-        label: const Text("Refine with Gemini AI", style: TextStyle(fontSize: 16, fontWeight: FontWeight.w800)),
+  Widget _buildGenerateButton() {
+    return ElevatedButton.icon(
+      onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (c) => const ResultPage())),
+      icon: const Icon(Icons.auto_awesome_rounded, size: 20),
+      label: const Text("Refine with Gemini", style: TextStyle(fontWeight: FontWeight.bold)),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: accentColor,
+        foregroundColor: Colors.white,
+        minimumSize: const Size(double.infinity, 60),
+        elevation: 0,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),
     );
   }
