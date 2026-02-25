@@ -13,7 +13,7 @@ class ResultPage extends StatefulWidget {
 class _ResultPageState extends State<ResultPage> {
   bool _isLoading = true;
   String _generatedSchedule = "";
-  final String _apiKey = "AIzaSyB0UGBFvuM22_CKyfwXq994iOAwu8is3uw";
+  final String _apiKey = "AIzaSyC2ZvfhT4mO3mO_LVMkoEwmlah_VVbQa3wq";
 
   // Palette Warna Minimalist
   final Color bgColor = const Color(0xFFF8FAFC);
@@ -54,7 +54,7 @@ class _ResultPageState extends State<ResultPage> {
     """;
 
     try {
-      final model = GenerativeModel(model: 'gemini-1.5-flash', apiKey: _apiKey);
+      final model = GenerativeModel(model: 'gemini-2.5-flash', apiKey: _apiKey);
       final content = [Content.text(prompt)];
       final response = await model.generateContent(content);
 
